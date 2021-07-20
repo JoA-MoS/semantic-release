@@ -10,7 +10,8 @@
     "timeout": "2m"
   },
   "bin": {
-    "semantic-release": "bin/semantic-release.js"
+    "semantic-release": "bin/semantic-release.js",
+    "semantic-release-plus": "bin/semantic-release.js"
   },
   "bugs": {
     "url": "https://github.com/semantic-release-plus/semantic-release/issues"
@@ -53,7 +54,7 @@
   "devDependencies": {
     "ava": "3.15.0",
     "clear-module": "4.1.1",
-    "codecov": "3.8.2",
+    "codecov": "3.8.3",
     "delay": "5.0.0",
     "dockerode": "3.3.0",
     "eslint": "^7.2.0",
@@ -62,10 +63,10 @@
     "fs-extra": "10.0.0",
     "got": "11.8.2",
     "husky": "^6.0.0",
-    "js-yaml": "3.14.1",
     "lint-staged": "^11.0.0",
+    "js-yaml": "4.1.0",
     "mockserver-client": "5.11.2",
-    "nock": "13.1.0",
+    "nock": "13.1.1",
     "nyc": "15.1.0",
     "p-retry": "4.5.0",
     "prettier": "2.3.1",
@@ -112,7 +113,8 @@
     "lint:fix": "npx eslint --fix .",
     "format:check": "npx prettier --check .",
     "format:write": "npx prettier --write .",
-    "semantic-release": "./bin/semantic-release.js",
+    "pretest": "npm run lint",
+    "semantic-release": "node ./bin/semantic-release.js",
     "test": "nyc ava -v",
     "test:ci": "nyc ava -v"
   }
