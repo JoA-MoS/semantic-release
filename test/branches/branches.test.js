@@ -1,7 +1,7 @@
 const test = require('ava');
 const { union } = require('lodash');
 const semver = require('semver');
-const proxyquire = require('proxyquire');
+const td = require('testdouble');
 
 const getBranch = (branches, branch) =>
   branches.find(({ name }) => name === branch);
@@ -26,10 +26,9 @@ test('Enforce ranges with branching release workflow', async (t) => {
     { name: 'beta', prerelease: true, tags: [] },
     { name: 'alpha', prerelease: true, tags: [] },
   ];
-  const getBranches = proxyquire('../../lib/branches', {
-    './get-tags': () => branches,
-    './expand': () => [],
-  });
+  td.replace('../../lib/branches/get-tags', () => branches);
+  td.replace('../../lib/branches/expand', () => []);
+  const getBranches = require('../../lib/branches');
 
   let result = (
     await getBranches('repositoryUrl', 'master', { options: { branches } })
@@ -400,10 +399,9 @@ test('Throw SemanticReleaseError for invalid configurations', async (t) => {
     { name: 'alpha', prerelease: 'alpha', tags: [] },
     { name: 'preview', prerelease: 'alpha', tags: [] },
   ];
-  const getBranches = proxyquire('../../lib/branches', {
-    './get-tags': () => branches,
-    './expand': () => [],
-  });
+  td.replace('../../lib/branches/get-tags', () => branches);
+  td.replace('../../lib/branches/expand', () => []);
+  const getBranches = require('../../lib/branches');
   const errors = [
     ...(await t.throwsAsync(
       getBranches('repositoryUrl', 'master', { options: { branches } })
@@ -437,10 +435,9 @@ test('Throw a SemanticReleaseError if there is duplicate branches', async (t) =>
     { name: 'master', tags: [] },
     { name: 'master', tags: [] },
   ];
-  const getBranches = proxyquire('../../lib/branches', {
-    './get-tags': () => branches,
-    './expand': () => [],
-  });
+  td.replace('../../lib/branches/get-tags', () => branches);
+  td.replace('../../lib/branches/expand', () => []);
+  const getBranches = require('../../lib/branches');
 
   const errors = [
     ...(await t.throwsAsync(
@@ -459,10 +456,9 @@ test('Throw a SemanticReleaseError for each invalid branch name', async (t) => {
     { name: '~master', tags: [] },
     { name: '^master', tags: [] },
   ];
-  const getBranches = proxyquire('../../lib/branches', {
-    './get-tags': () => branches,
-    './expand': () => [],
-  });
+  td.replace('../../lib/branches/get-tags', () => branches);
+  td.replace('../../lib/branches/expand', () => []);
+  const getBranches = require('../../lib/branches');
 
   const errors = [
     ...(await t.throwsAsync(

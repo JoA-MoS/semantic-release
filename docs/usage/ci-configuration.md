@@ -3,7 +3,7 @@
 ## Run `semantic-release` only after all tests succeeded
 
 The `semantic-release` command must be executed only after all the tests in the CI build pass. If the build runs multiple jobs (for example to test on multiple Operating Systems or Node versions) the CI has to be configured to guarantee that the `semantic-release` command is executed only after all jobs are successful.
-Here is a few example of the CI services that can be used to achieve this:
+Here are a few examples of the CI services that can be used to achieve this:
 
 - [Travis Build Stages](https://docs.travis-ci.com/user/build-stages)
 - [CircleCI Workflows](https://circleci.com/docs/2.0/workflows)
@@ -27,7 +27,7 @@ See [CI configuration recipes](../recipes/ci-configurations#ci-configurations) f
 | `GH_TOKEN` or `GITHUB_TOKEN`                          | A GitHub [personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line).                                                                                                    |
 | `GL_TOKEN` or `GITLAB_TOKEN`                          | A GitLab [personal access token](https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html).                                                                                                                       |
 | `BB_TOKEN` or `BITBUCKET_TOKEN`                       | A Bitbucket [personal access token](https://confluence.atlassian.com/bitbucketserver/personal-access-tokens-939515499.html).                                                                                                 |
-| `BB_TOKEN_BASIC_AUTH` or `BITBUCKET_TOKEN_BASIC_AUTH` | A Bitbucket [personal access token](https://confluence.atlassian.com/bitbucketserver/personal-access-tokens-939515499.html) with basic auth support. For clearification `user:token` has to be the value of this env.        |
+| `BB_TOKEN_BASIC_AUTH` or `BITBUCKET_TOKEN_BASIC_AUTH` | A Bitbucket [personal access token](https://confluence.atlassian.com/bitbucketserver/personal-access-tokens-939515499.html) with basic auth support. For clarification `user:token` has to be the value of this env.         |
 | `GIT_CREDENTIALS`                                     | [URL encoded](https://en.wikipedia.org/wiki/Percent-encoding) Git username and password in the format `<username>:<password>`. The username and password must each be individually URL encoded, not the `:` separating them. |
 
 Alternatively the Git authentication can be set up via [SSH keys](../recipes/git-hosted-services/git-auth-ssh-keys.md).

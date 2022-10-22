@@ -96,7 +96,7 @@ async function run(context, plugins) {
 
   logger[options.dryRun ? 'warn' : 'success'](
     `Run automated release from branch ${ciBranch} on repository ${
-      options.repositoryUrl
+      options.originalRepositoryURL
     }${options.dryRun ? ' in dry-run mode' : ''}`
   );
 
@@ -355,6 +355,7 @@ module.exports = async (
   context.logger.log(`Running ${pkg.name} version ${pkg.version}`);
   try {
     const { plugins, options } = await getConfig(context, cliOptions);
+    options.originalRepositoryURL = options.repositoryUrl;
     context.options = options;
     try {
       const result = await run(context, plugins);
