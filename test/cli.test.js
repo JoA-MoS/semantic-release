@@ -1,8 +1,11 @@
 const test = require('ava');
 const { escapeRegExp } = require('lodash');
-const proxyquire = require('proxyquire').noPreserveCache();
+const td = require('testdouble');
 const { stub } = require('sinon');
 const { SECRET_REPLACEMENT } = require('../lib/definitions/constants');
+
+let previousArgv;
+let previousEnv;
 
 test.beforeEach((t) => {
   t.context.logs = '';
@@ -13,11 +16,17 @@ test.beforeEach((t) => {
   t.context.stderr = stub(process.stderr, 'write').callsFake((value) => {
     t.context.errors += value.toString();
   });
+
+  previousArgv = process.argv;
+  previousEnv = process.env;
 });
 
 test.afterEach.always((t) => {
   t.context.stdout.restore();
   t.context.stderr.restore();
+
+  process.argv = previousArgv;
+  process.env = previousEnv;
 });
 
 test.serial('Pass options to semantic-release API', async (t) => {
@@ -63,7 +72,9 @@ test.serial('Pass options to semantic-release API', async (t) => {
     '--debug',
     '-d',
   ];
-  const cli = proxyquire('../cli', { '.': run, process: { ...process, argv } });
+  td.replace('..', run);
+  process.argv = argv;
+  const cli = require('../cli');
 
   const exitCode = await cli();
 
@@ -107,10 +118,9 @@ test.serial(
       'config2',
       '--dry-run',
     ];
-    const cli = proxyquire('../cli', {
-      '.': run,
-      process: { ...process, argv },
-    });
+    td.replace('..', run);
+    process.argv = argv;
+    const cli = require('../cli');
 
     const exitCode = await cli();
 
@@ -138,7 +148,9 @@ test.serial('Pass unknown options to semantic-release API', async (t) => {
     '--second-option',
     'value3',
   ];
-  const cli = proxyquire('../cli', { '.': run, process: { ...process, argv } });
+  td.replace('..', run);
+  process.argv = argv;
+  const cli = require('../cli');
 
   const exitCode = await cli();
 
@@ -154,10 +166,9 @@ test.serial(
   async (t) => {
     const run = stub().resolves(true);
     const argv = ['', '', '--publish', 'false'];
-    const cli = proxyquire('../cli', {
-      '.': run,
-      process: { ...process, argv },
-    });
+    td.replace('..', run);
+    process.argv = argv;
+    const cli = require('../cli');
 
     const exitCode = await cli();
 
@@ -172,10 +183,9 @@ test.serial(
   async (t) => {
     const run = stub().resolves(true);
     const argv = ['', '', '-b', 'master'];
-    const cli = proxyquire('../cli', {
-      '.': run,
-      process: { ...process, argv },
-    });
+    td.replace('..', run);
+    process.argv = argv;
+    const cli = require('../cli');
 
     await cli();
 
@@ -193,7 +203,9 @@ test.serial(
 test.serial('Display help', async (t) => {
   const run = stub().resolves(true);
   const argv = ['', '', '--help'];
-  const cli = proxyquire('../cli', { '.': run, process: { ...process, argv } });
+  td.replace('..', run);
+  process.argv = argv;
+  const cli = require('../cli');
 
   const exitCode = await cli();
 
@@ -206,10 +218,9 @@ test.serial(
   async (t) => {
     const run = stub().resolves(true);
     const argv = ['', '', 'pre'];
-    const cli = proxyquire('../cli', {
-      '.': run,
-      process: { ...process, argv },
-    });
+    td.replace('..', run);
+    process.argv = argv;
+    const cli = require('../cli');
 
     const exitCode = await cli();
 
@@ -224,10 +235,9 @@ test.serial(
   async (t) => {
     const run = stub().resolves(true);
     const argv = ['', '', '--analyze-commits', 'analyze1', 'analyze2'];
-    const cli = proxyquire('../cli', {
-      '.': run,
-      process: { ...process, argv },
-    });
+    td.replace('..', run);
+    process.argv = argv;
+    const cli = require('../cli');
 
     const exitCode = await cli();
 
@@ -242,10 +252,9 @@ test.serial(
   async (t) => {
     const run = stub().rejects(new Error('semantic-release error'));
     const argv = ['', ''];
-    const cli = proxyquire('../cli', {
-      '.': run,
-      process: { ...process, argv },
-    });
+    td.replace('..', run);
+    process.argv = argv;
+    const cli = require('../cli');
 
     const exitCode = await cli();
 
@@ -262,10 +271,10 @@ test.serial(
       new Error(`Throw error: Exposing token ${env.MY_TOKEN}`)
     );
     const argv = ['', ''];
-    const cli = proxyquire('../cli', {
-      '.': run,
-      process: { ...process, argv, env: { ...process.env, ...env } },
-    });
+    td.replace('..', run);
+    process.argv = argv;
+    process.env = { ...process.env, ...env };
+    const cli = require('../cli');
 
     const exitCode = await cli();
 

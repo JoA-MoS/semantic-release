@@ -19,8 +19,8 @@ test.beforeEach((t) => {
   };
 });
 
-test('Export default plugins', (t) => {
-  const plugins = getPlugins(
+test('Export default plugins', async (t) => {
+  const plugins = await getPlugins(
     { cwd, options: {}, logger: t.context.logger },
     {}
   );
@@ -36,8 +36,8 @@ test('Export default plugins', (t) => {
   t.is(typeof plugins.fail, 'function');
 });
 
-test('Export plugins based on steps config', (t) => {
-  const plugins = getPlugins(
+test('Export plugins based on steps config', async (t) => {
+  const plugins = await getPlugins(
     {
       cwd,
       logger: t.context.logger,
@@ -68,7 +68,7 @@ test('Export plugins based on steps config', (t) => {
 test('Export plugins based on "plugins" config (array)', async (t) => {
   const plugin1 = { verifyConditions: stub(), publish: stub() };
   const plugin2 = { verifyConditions: stub(), verifyRelease: stub() };
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     {
       cwd,
       logger: t.context.logger,
@@ -76,7 +76,6 @@ test('Export plugins based on "plugins" config (array)', async (t) => {
     },
     {}
   );
-
   await plugins.verifyConditions({ options: {} });
   t.true(plugin1.verifyConditions.calledOnce);
   t.true(plugin2.verifyConditions.calledOnce);
@@ -100,7 +99,7 @@ test('Export plugins based on "plugins" config (array)', async (t) => {
 
 test('Export plugins based on "plugins" config (single definition)', async (t) => {
   const plugin1 = { verifyConditions: stub(), publish: stub() };
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     { cwd, logger: t.context.logger, options: { plugins: plugin1 } },
     {}
   );
@@ -129,7 +128,7 @@ test('Merge global options, "plugins" options and step options', async (t) => {
   ];
   const plugin2 = [{ verifyConditions: stub() }, { pluginOpt2: 'plugin2' }];
   const plugin3 = [stub(), { pluginOpt3: 'plugin3' }];
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     {
       cwd,
       logger: t.context.logger,
@@ -165,9 +164,9 @@ test('Merge global options, "plugins" options and step options', async (t) => {
   });
 });
 
-test('Unknown steps of plugins configured in "plugins" are ignored', (t) => {
+test('Unknown steps of plugins configured in "plugins" are ignored', async (t) => {
   const plugin1 = { verifyConditions: () => {}, unknown: () => {} };
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     { cwd, logger: t.context.logger, options: { plugins: [plugin1] } },
     {}
   );
@@ -190,7 +189,7 @@ test('Export plugins loaded from the dependency of a shareable config module', a
     ''
   );
 
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     {
       cwd,
       logger: t.context.logger,
@@ -223,7 +222,7 @@ test('Export plugins loaded from the dependency of a shareable config file', asy
   );
   await outputFile(path.resolve(cwd, 'shareable-config.js'), '');
 
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     {
       cwd,
       logger: t.context.logger,
@@ -251,14 +250,14 @@ test('Export plugins loaded from the dependency of a shareable config file', asy
   t.is(typeof plugins.fail, 'function');
 });
 
-test('Use default when only options are passed for a single plugin', (t) => {
+test('Use default when only options are passed for a single plugin', async (t) => {
   const analyzeCommits = {};
   const generateNotes = {};
   const publish = {};
   const success = () => {};
   const fail = [() => {}];
 
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     {
       cwd,
       logger: t.context.logger,
@@ -289,7 +288,7 @@ test('Use default when only options are passed for a single plugin', (t) => {
 });
 
 test('Merge global options with plugin options', async (t) => {
-  const plugins = getPlugins(
+  const plugins = await getPlugins(
     {
       cwd,
       logger: t.context.logger,
@@ -315,9 +314,9 @@ test('Merge global options with plugin options', async (t) => {
   });
 });
 
-test('Throw an error for each invalid plugin configuration', (t) => {
+test('Throw an error for each invalid plugin configuration', async (t) => {
   const errors = [
-    ...t.throws(() =>
+    ...(await t.throwsAsync(() =>
       getPlugins(
         {
           cwd,
@@ -335,7 +334,7 @@ test('Throw an error for each invalid plugin configuration', (t) => {
         },
         {}
       )
-    ),
+    )),
   ];
 
   t.is(errors[0].name, 'SemanticReleaseError');
@@ -348,9 +347,9 @@ test('Throw an error for each invalid plugin configuration', (t) => {
   t.is(errors[3].code, 'EPLUGINCONF');
 });
 
-test('Throw EPLUGINSCONF error if the "plugins" option contains an old plugin definition (returns a function)', (t) => {
+test('Throw EPLUGINSCONF error if the "plugins" option contains an old plugin definition (returns a function)', async (t) => {
   const errors = [
-    ...t.throws(() =>
+    ...(await t.throwsAsync(() =>
       getPlugins(
         {
           cwd,
@@ -365,7 +364,7 @@ test('Throw EPLUGINSCONF error if the "plugins" option contains an old plugin de
         },
         {}
       )
-    ),
+    )),
   ];
 
   t.is(errors[0].name, 'SemanticReleaseError');
@@ -374,9 +373,9 @@ test('Throw EPLUGINSCONF error if the "plugins" option contains an old plugin de
   t.is(errors[1].code, 'EPLUGINSCONF');
 });
 
-test('Throw EPLUGINSCONF error for each invalid definition if the "plugins" option', (t) => {
+test('Throw EPLUGINSCONF error for each invalid definition if the "plugins" option', async (t) => {
   const errors = [
-    ...t.throws(() =>
+    ...(await t.throwsAsync(() =>
       getPlugins(
         {
           cwd,
@@ -385,7 +384,7 @@ test('Throw EPLUGINSCONF error for each invalid definition if the "plugins" opti
         },
         {}
       )
-    ),
+    )),
   ];
 
   t.is(errors[0].name, 'SemanticReleaseError');

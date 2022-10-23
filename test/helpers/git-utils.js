@@ -86,7 +86,7 @@ async function initBareRepo(repositoryUrl, branch = 'master') {
  * @param {Array<string>} messages Commit messages.
  * @param {Object} [execaOpts] Options to pass to `execa`.
  *
- * @returns {Array<Commit>} The created commits, in reverse order (to match `git log` order).
+ * @returns {Promise<Array<Commit>>} The created commits, in reverse order (to match `git log` order).
  */
 async function gitCommits(messages, execaOptions) {
   await pEachSeries(
