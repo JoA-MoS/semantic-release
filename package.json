@@ -59,7 +59,7 @@
     "dockerode": "3.3.1",
     "eslint": "8.6.0",
     "eslint-config-prettier": "8.3.0",
-    "file-url": "3.0.0",
+    "file-url": "4.0.0",
     "fs-extra": "9.1.0",
     "got": "11.8.3",
     "husky": "7.0.4",
